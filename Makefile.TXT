@@ -1,0 +1,14 @@
+clean:
+	del List_main.o Log_functions.o 
+
+run: List.exe
+	List.exe
+List.exe: List_main.o Log_functions.o List.h
+	g++ List_main.o Log_functions.o List.h -o List.exe
+
+List_main.o: List_main.cpp
+	g++  List_main.cpp -c
+
+Log_functions.o: Log_functions.cpp
+	g++ Log_functions.cpp -c 
+
