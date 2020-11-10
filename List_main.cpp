@@ -35,8 +35,11 @@ int main ()
         printf ("\nlist_ptr-arr_nodes[%d].index_next is %d", i, list_ptr->arr_nodes[i].index_next);
         printf ("\nlist_ptr-arr_nodes[%d].index_prev is %d\n\n", i, list_ptr->arr_nodes[i].index_prev);
     }  */
+    List_Insert_Place_After (list_ptr, 77, 0);
 
-    List_Insert_Place_After (list_ptr, 77, 3);
+
+    List_Extract_Place (list_ptr, 4);
+
 
     Dump_Graph_Logical  (list_ptr);
     Dump_Graph_Physical (list_ptr);
@@ -62,8 +65,8 @@ smart_list* List_Construct (size_t capacity)
 
     list_ptr->capacity   = capacity;
     list_ptr->size_list  = 0;
-    list_ptr->index_head = 1;
-    list_ptr->index_tail = 1;
+    list_ptr->index_head = 0;
+    list_ptr->index_tail = 0;
     list_ptr->index_free = 1;
 
     size_t i = 0;
@@ -105,39 +108,33 @@ void List_Destruct (smart_list* list_ptr)
 
 void List_Insert_Head (smart_list* list_ptr, elem_t value)
 {
-    assert (list_ptr);
-    assert (list_ptr->arr_nodes);
-
-    size_t saved_index_head = list_ptr->index_head;
-    size_t saved_next_free  = list_ptr->arr_nodes[list_ptr->index_free].index_next;
-
-    list_ptr->index_head   = list_ptr->index_free;
-    list_ptr->arr_nodes[saved_index_head].index_prev = list_ptr->index_head;
-
-    list_ptr->arr_nodes[list_ptr->index_head].value      = value;
-    list_ptr->arr_nodes[list_ptr->index_head].index_prev = 0;
-    list_ptr->arr_nodes[list_ptr->index_head].index_next = saved_index_head;
-
-    if (list_ptr->size_list == 0)
-        list_ptr->arr_nodes[list_ptr->index_head].index_next = 0;
-
-    list_ptr->index_free = saved_next_free;
-    list_ptr->arr_nodes[list_ptr->index_free].index_prev = 0;
-
-    list_ptr->size_list++;
+    List_Insert_Place_After (list_ptr, value, 0);
 }
 
 
 
 
-elem_t List_Extract_Head (smart_list* list_ptr)
+elem_t List_Extract_Place (smart_list* list_ptr, size_t place)
 {
     assert (list_ptr);
     assert (list_ptr->arr_nodes);
 
     assert (list_ptr->size_list > 0);
 
-    size_t saved_index_head = list_ptr->index_head;
+    elem_t saved_value = list_ptr->arr_nodes[place].value;
+
+    list_ptr->arr_nodes[list_ptr->arr_nodes[place].index_next].index_prev = list_ptr->arr_nodes[place].index_prev;
+    list_ptr->arr_nodes[list_ptr->arr_nodes[place].index_prev].index_next = list_ptr->arr_nodes[place].index_next;
+
+    list_ptr->arr_nodes[place].index_prev = 0;
+    list_ptr->arr_nodes[place].index_next = list_ptr->index_free;
+    list_ptr->arr_nodes[place].value      = NAN;
+
+    list_ptr->arr_nodes[list_ptr->index_free].index_prev = place;
+
+    list_ptr->index_free = place;
+
+    /*size_t saved_index_head = list_ptr->index_head;
     elem_t saved_value      = list_ptr->arr_nodes[list_ptr->index_head].value;
 
     if (list_ptr->size_list > 1)
@@ -154,7 +151,7 @@ elem_t List_Extract_Head (smart_list* list_ptr)
 
     list_ptr->index_free = saved_index_head;
 
-    list_ptr->size_list--;
+    list_ptr->size_list--;*/
 
     return saved_value;
 }
@@ -172,5 +169,31 @@ void List_Insert_Place_After (smart_list* list_ptr, elem_t value, size_t place)
     list_ptr->index_free = list_ptr->arr_nodes[saved_free].index_next;
     list_ptr->arr_nodes[list_ptr->index_free].index_prev = 0;
 
+    list_ptr->arr_nodes[saved_free].index_prev = place;
+    list_ptr->arr_nodes[saved_free].value      = value;
 
+    if (place == 0)
+    {
+        list_ptr->arr_nodes[saved_free].index_next = list_ptr->index_head;
+        list_ptr->index_head = saved_free;
+    }
+
+    else
+    {
+        list_ptr->arr_nodes[saved_free].index_next = list_ptr->arr_nodes[place].index_next;
+    }
+
+    list_ptr->arr_nodes[list_ptr->arr_nodes[saved_free].index_prev].index_next = saved_free;
+    list_ptr->arr_nodes[list_ptr->arr_nodes[saved_free].index_next].index_prev = saved_free;
+
+    list_ptr->size_list++;
+}
+
+
+
+void List_Insert_Place_Before (smart_list* list_ptr, elem_t value, size_t place)
+{
+    assert (place > 0);
+
+    List_Insert_Place_After (list_ptr, value, place - 1);
 }

@@ -12,6 +12,7 @@ void Dump_Graph_Physical (smart_list* list_ptr)
 
     fprintf (file_graph, "\"%p\" [label = \"{BEGIN}\"];\n", list_ptr->arr_nodes);
     fprintf (file_graph, "\"%p\"->\"%p\"\n", list_ptr->arr_nodes, list_ptr->arr_nodes + list_ptr->index_free);
+    fprintf (file_graph, "\"%p\"->\"%p\"\n", list_ptr->arr_nodes, list_ptr->arr_nodes + list_ptr->index_head);
 
     for (size_t i = 1; i < list_ptr->capacity; i++)
     {
@@ -25,6 +26,7 @@ void Dump_Graph_Physical (smart_list* list_ptr)
             fprintf (file_graph, "\"%p\" [label = \"{%lg|{%d|%d|%d}}\"];\n",
                      list_ptr->arr_nodes + i, list_ptr->arr_nodes[i].value, list_ptr->arr_nodes[i].index_prev, i, list_ptr->arr_nodes[i].index_next);
         }
+
         fprintf (file_graph, "\"%p\"->\"%p\" [color = white]\n", list_ptr->arr_nodes + i - 1, list_ptr->arr_nodes + i);
     }
 
