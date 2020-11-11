@@ -1,0 +1,53 @@
+
+List_ptr (FREE_NODE_INCORRECT) [00000000001e1510]
+
+size     = 5
+capacity = 11
+arr_nodes [00000000001e1550]
+{
+
+	  [0] = nan
+	prev_index = 0
+	next_index = 0
+
+	* [1] = 99
+	prev_index = 0
+	next_index = 2
+
+	* [2] = 4
+	prev_index = 1
+	next_index = 3
+
+	* [3] = 3
+	prev_index = 2
+	next_index = 4
+
+	* [4] = 2
+	prev_index = 3
+	next_index = 0
+
+	  [5] = nan
+	prev_index = 4
+	next_index = 6
+
+	  [6] = nan
+	prev_index = 5
+	next_index = 7
+
+	  [7] = nan
+	prev_index = 6
+	next_index = 8
+
+	  [8] = nan
+	prev_index = 7
+	next_index = 9
+
+	  [9] = nan
+	prev_index = 8
+	next_index = 10
+
+	  [10] = nan
+	prev_index = 9
+	next_index = 0
+
+}
